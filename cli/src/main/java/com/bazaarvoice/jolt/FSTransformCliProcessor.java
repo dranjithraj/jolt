@@ -15,12 +15,14 @@
  */
 package com.bazaarvoice.jolt;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
-
-import java.io.File;
 
 /**
  * The JoltCliProcessor for Chainr. See https://github.com/bazaarvoice/jolt/blob/master/jolt-core/src/main/java/com/bazaarvoice/jolt/Chainr.java
@@ -68,7 +70,13 @@ public class FSTransformCliProcessor implements JoltCliProcessor {
 
         Chainr chainr;
         try {
-            chainr = ChainrFactory.fromFile((File) ns.get("spec"));
+        	 File specFile = (File) ns.get("spec");
+             Object spec = JoltCliUtilities.readJsonInput( specFile, SUPPRESS_OUTPUT );
+             String specString = JsonUtils.toJsonString(spec);
+             
+             ArrayList<Object> joltSpec = getArrayList(specString);                                  
+             
+             chainr = Chainr.fromSpec(joltSpec);
         } catch ( Exception e ) {
             JoltCliUtilities.printToStandardOut( "Chainr failed to load spec file.", SUPPRESS_OUTPUT );
             e.printStackTrace( System.out );
@@ -89,5 +97,18 @@ public class FSTransformCliProcessor implements JoltCliProcessor {
         Boolean uglyPrint = ns.getBoolean( "u" );
         return JoltCliUtilities.printJsonObject( output, uglyPrint, SUPPRESS_OUTPUT );
     }
+    /*
+     * Extracting the Jolt spec array
+     * */
+     @SuppressWarnings("unchecked")
+	private ArrayList<Object> getArrayList(String spec) {    	 	    	 
+		 LinkedHashMap<String, Object> specJSON = (LinkedHashMap<String, Object>) JsonUtils.jsonToObject(spec);                 
+		 ArrayList<Object> configs = (ArrayList<Object>) specJSON.get("configs");
+         LinkedHashMap<String, Object> linkedHashMap2 = (LinkedHashMap<String, Object>) configs.get(0);
+         //TODO : Fix the picking first Config issue based on templates
+         LinkedHashMap<String, Object> query = (LinkedHashMap<String, Object>) linkedHashMap2.get("query");
+         ArrayList<Object> al = (ArrayList<Object>) query.get("select");
+         return al;
+     }
 
 }
