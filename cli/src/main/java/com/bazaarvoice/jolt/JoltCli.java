@@ -34,6 +34,7 @@ public class JoltCli {
         temp.put( JoltCliUtilities.DIFFY_COMMAND_IDENTIFIER, new DiffyCliProcessor() );
         temp.put( JoltCliUtilities.SORT_COMMAND_IDENTIFIER, new SortCliProcessor() );
         temp.put( JoltCliUtilities.TRANSFORM_COMMAND_IDENTIFIER, new TransformCliProcessor() );
+        temp.put( JoltCliUtilities.FS_TRANSFORM_COMMAND_IDENTIFIER, new FSTransformCliProcessor() );
 
         JOLT_CLI_PROCESSOR_MAP = Collections.unmodifiableMap( temp );
     }

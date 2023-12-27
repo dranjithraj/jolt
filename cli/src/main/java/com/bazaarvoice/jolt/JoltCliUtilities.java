@@ -29,6 +29,7 @@ public class JoltCliUtilities {
     public static final String DIFFY_COMMAND_IDENTIFIER = "diffy";
     public static final String SORT_COMMAND_IDENTIFIER = "sort";
     public static final String TRANSFORM_COMMAND_IDENTIFIER = "transform";
+    public static final String FS_TRANSFORM_COMMAND_IDENTIFIER = "fstransform";
 
     /**
      * Prints the given string to standard out, or doesn't, based on the suppressOutput flag
